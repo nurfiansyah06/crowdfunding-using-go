@@ -6,10 +6,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-
 type Service interface {
 	RegisterUser(input RegisterUserInput) (User, error)
 	Login(input LoginInput) (User, error)
+	IsEmailAvailable(input CheckEmailInput) (bool, error)
 }
 
 type service struct {
@@ -20,12 +20,16 @@ func NewService(repository Repository) *service {
 	return &service{repository}
 }
 
-func (s *service) RegisterUser(input RegisterUserInput) (User, error) {
+func (s *service) RegisterUser(input RegisterUserInput) (User, error) { // service user register
+	
+	// input field user
 	user := User{}
 	user.Name = input.Name
 	user.Email = input.Email
 	user.Occupation = input.Occupation
 	PasswordHash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.MinCost)
+	
+	
 	if err != nil {
 		return user, err
 	}
@@ -43,7 +47,7 @@ func (s *service) RegisterUser(input RegisterUserInput) (User, error) {
 
 }
 
-func(s *service) Login(input LoginInput) (User, error) {
+func(s *service) Login(input LoginInput) (User, error) { // service login
 	email := input.Email
 	password := input.Password
 
@@ -52,6 +56,7 @@ func(s *service) Login(input LoginInput) (User, error) {
 		return user, err
 	}
 
+	// check if userId is 0 then user not found
 	if user.ID == 0 {
 		return user, errors.New("User not found")
 	}
@@ -62,4 +67,19 @@ func(s *service) Login(input LoginInput) (User, error) {
 	}
 
 	return user, nil
+}
+
+func (s *service) IsEmailAvailable(input CheckEmailInput) (bool, error) {
+	email := input.Email
+
+	user, err := s.repository.FindbyEmail(email)
+	if err != nil {
+		return false, err
+	}
+
+	if user.ID == 0 {
+		return true, nil
+	}
+
+	return false, nil
 }
