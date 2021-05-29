@@ -89,7 +89,7 @@ func (s *service) SaveAvatar(ID int, fileLocation string) (User, error) {
 	user, err := s.repository.FindbyID(ID)
 
 	if err != nil {
-		return user, nil
+		return user, err
 	}
 
 	user.AvatarFileName = fileLocation
@@ -97,7 +97,7 @@ func (s *service) SaveAvatar(ID int, fileLocation string) (User, error) {
 	updatedUser, err := s.repository.Update(user)
 
 	if err != nil {
-		return updatedUser, nil
+		return updatedUser, err
 	}
 
 	return updatedUser, nil
