@@ -4,7 +4,6 @@ import (
 	"crowfunding/auth"
 	"crowfunding/handler"
 	"crowfunding/user"
-	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +24,9 @@ func main() {
 		userService := user.NewService(userRepository)
 		authService := auth.NewService()
 
-		fmt.Println(authService.GenerateToken(1001))
+		// dotenv := auth.SecretKeyJwt("SECRET_KEY_JWT")
+
+  		// fmt.Println(dotenv)
 
 		userHandler := handler.NewUserHandler(userService, authService)
 		router := gin.Default()
