@@ -2,6 +2,7 @@ package main
 
 import (
 	"crowfunding/auth"
+	"crowfunding/campaign"
 	"crowfunding/handler"
 	"crowfunding/helper"
 	"crowfunding/user"
@@ -25,15 +26,26 @@ func main() {
 		}
 
 		userRepository := user.NewRepository(db)
+		campaignRepository := campaign.NewRepository(db)
+
 		userService := user.NewService(userRepository)
 		authService := auth.NewService()
+		campaignService := campaign.NewService(campaignRepository)
+		
+		// campaings, _ := campaignService.GetCampaigns(1)
+		// fmt.Println(campaings)
+
+		// for _, campaign := range campaigns
 
 		// dotenv := auth.SecretKeyJwt("SECRET_KEY_JWT")
 
   		// fmt.Println(dotenv)
 
 		userHandler := handler.NewUserHandler(userService, authService)
+		campaignHandler := handler.NewCampaignHandler(campaignService)
 		router := gin.Default()
+		router.Static("/images", "./images")
+
 
 		api := router.Group("/api/v1")
 
@@ -41,6 +53,7 @@ func main() {
 		api.POST("/login", userHandler.Login)
 		api.POST("/email_checkers", userHandler.CheckEmailAvailable)
 		api.POST("/avatars", authMiddleware(authService, userService) , userHandler.UploadAvatar)
+		api.GET("/campaigns", campaignHandler.GetCampaigns)
 
 		router.Run()
 
