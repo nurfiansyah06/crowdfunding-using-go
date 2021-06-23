@@ -49,12 +49,17 @@ func main() {
 
 		api := router.Group("/api/v1")
 
+		// users
 		api.POST("/users", userHandler.RegisterUser)
 		api.POST("/login", userHandler.Login)
 		api.POST("/email_checkers", userHandler.CheckEmailAvailable)
 		api.POST("/avatars", authMiddleware(authService, userService) , userHandler.UploadAvatar)
+		
+		// campaigns
 		api.GET("/campaigns", campaignHandler.GetCampaigns)
 		api.GET("/campaign/:id", campaignHandler.GetCampaign)
+		api.POST("/campaigns", authMiddleware(authService, userService) ,campaignHandler.CreateCampaign)
+		api.PUT("/campaign/:id", authMiddleware(authService, userService), campaignHandler.UpdateCampaign)
 
 		router.Run()
 
