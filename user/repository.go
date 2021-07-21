@@ -2,6 +2,7 @@ package user
 
 import "gorm.io/gorm"
 
+// create interface for function
 type Repository interface {
 	Save(user User) (User, error)
 	FindbyEmail(email string) (User, error)
@@ -9,14 +10,18 @@ type Repository interface {
 	Update(user User) (User, error)
 }
 
+// create repository struct for connect to db use gorm
 type repository struct {
 	db *gorm.DB
 }
+
 
 func NewRepository(db *gorm.DB) *repository {
 	return &repository{db}
 }
 
+
+// func create user to db
 func (r *repository) Save(user User) (User, error) {
 	err := r.db.Create(&user).Error
 	if err != nil {

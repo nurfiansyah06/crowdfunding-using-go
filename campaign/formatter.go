@@ -58,7 +58,7 @@ type CampaignDetailFormatter struct {
 	Slug             string   `json:"slug"`
 	Perks            []string `json:"perks"`
 	User 			 CampaignUserFormatter `json:"user"`
-	Images			[]CampaignImageFormatter `json:"images"`
+	Images			 []CampaignImageFormatter `json:"images"`
 }
 
 type CampaignUserFormatter struct {
